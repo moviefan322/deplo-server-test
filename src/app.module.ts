@@ -52,7 +52,7 @@ export class AppModule {
     consumer
       .apply(
         session({
-          secret: 'my-secret',
+          secret: [this.configService.get('SESSION_SECRET')],
           resave: false,
           saveUninitialized: false,
         }),
