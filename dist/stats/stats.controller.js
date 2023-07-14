@@ -11,15 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatsController = void 0;
 const common_1 = require("@nestjs/common");
@@ -30,23 +21,17 @@ let StatsController = exports.StatsController = class StatsController {
     constructor(statsService) {
         this.statsService = statsService;
     }
-    findStats(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.statsService.findStats(userId);
-        });
+    async findStats(userId) {
+        return this.statsService.findStats(userId);
     }
-    create(body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log(body);
-            const stats = yield this.statsService.create(body);
-            return stats;
-        });
+    async create(body) {
+        console.log(body);
+        const stats = await this.statsService.create(body);
+        return stats;
     }
-    update(id, body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const stats = yield this.statsService.update(id, body);
-            return stats;
-        });
+    async update(id, body) {
+        const stats = await this.statsService.update(id, body);
+        return stats;
     }
 };
 __decorate([

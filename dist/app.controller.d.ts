@@ -1,7 +1,7 @@
-import { AuthService } from './auth/auth.service';
-import { FlashcardsService } from './flashcards/flashcards.service';
-import { StatsService } from './stats/stats.service';
-import { UsersService } from './users/users.service';
+import { AuthService } from "./auth/auth.service";
+import { FlashcardsService } from "./flashcards/flashcards.service";
+import { StatsService } from "./stats/stats.service";
+import { UsersService } from "./users/users.service";
 export declare class AppController {
     private authService;
     private statsService;
@@ -24,7 +24,7 @@ export declare class AppController {
         flashcards: import("./flashcards/flashcard.entity").Flashcard[];
     }>;
     getUserData(req: any, id: number): Promise<{
-        user: import("./users/user.entity").User;
+        user: import("./users/user.entity").User | null;
         stats: import("./stats/stats.entity").Stats[];
         flashcards: import("./flashcards/flashcard.entity").Flashcard[];
     }>;

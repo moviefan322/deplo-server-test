@@ -11,15 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
@@ -37,43 +28,31 @@ let UsersController = exports.UsersController = class UsersController {
         this.usersService = usersService;
         this.authService = authService;
     }
-    getMe(user, session) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return session.userId;
-        });
+    async getMe(user, session) {
+        return session.userId;
     }
-    signout(session) {
-        return __awaiter(this, void 0, void 0, function* () {
-            session.userId = null;
-        });
+    async signout(session) {
+        session.userId = null;
     }
-    createUser(body, session) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.authService.signup(body.email, body.password, body.username);
-            session.userId = user.id;
-            return user;
-        });
+    async createUser(body, session) {
+        const user = await this.authService.signup(body.email, body.password, body.username);
+        session.userId = user.id;
+        return user;
     }
-    signIn(body, session) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.authService.signin(body.email, body.password);
-            session.userId = user.id;
-            return user;
-        });
+    async signIn(body, session) {
+        const user = await this.authService.signin(body.email, body.password);
+        session.userId = user.id;
+        return user;
     }
-    findUser(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.usersService.findOne(parseInt(id));
-            if (!user) {
-                throw new common_1.NotFoundException('user not found');
-            }
-            return user;
-        });
+    async findUser(id) {
+        const user = await this.usersService.findOne(parseInt(id));
+        if (!user) {
+            throw new common_1.NotFoundException('user not found');
+        }
+        return user;
     }
-    findAllUsers(email) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.usersService.find(email);
-        });
+    async findAllUsers(email) {
+        return this.usersService.find(email);
     }
     removeUser(id) {
         return this.usersService.remove(parseInt(id));

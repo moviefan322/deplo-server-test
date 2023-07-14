@@ -1,33 +1,38 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Module, ValidationPipe, MiddlewareConsumer } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { LessonsModule } from './lessons/lessons.module';
-import { StatsModule } from './stats/stats.module';
-import { User } from './users/user.entity';
-import { Stats } from './stats/stats.entity';
-import { Lesson } from './lessons/lesson.entity';
-import * as session from 'express-session';
-import { Flashcard } from './flashcards/flashcard.entity';
-import { FlashcardsModule } from './flashcards/flashcards.module';
-import { AuthModule } from './auth/auth.module';
+import { Module, ValidationPipe, MiddlewareConsumer } from "@nestjs/common";
+import { APP_PIPE } from "@nestjs/core";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { UsersModule } from "./users/users.module";
+import { LessonsModule } from "./lessons/lessons.module";
+import { StatsModule } from "./stats/stats.module";
+import * as session from "express-session";
+import { FlashcardsModule } from "./flashcards/flashcards.module";
+import { AuthModule } from "./auth/auth.module";
+import { TypeOrmModuleOptions } from "@nestjs/typeorm/dist/interfaces/typeorm-options.interface";
+import { DBOptions } from "../db.datasourceoptions";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env'],
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
       cache: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, Stats, Lesson, Flashcard],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => {
+        const dbOptions: TypeOrmModuleOptions = {
+          // retryAttempts: 10,
+          // retryDelay: 3000,
+          // autoLoadEntities: false
+        };
+
+        Object.assign(dbOptions, DBOptions);
+
+        return dbOptions;
+      },
     }),
     UsersModule,
     LessonsModule,
@@ -52,11 +57,11 @@ export class AppModule {
     consumer
       .apply(
         session({
-          secret: [this.configService.get('SESSION_SECRET')],
+          secret: "supersecret",
           resave: false,
           saveUninitialized: false,
-        }),
+        })
       )
-      .forRoutes('*');
+      .forRoutes("*");
   }
 }

@@ -8,15 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -34,63 +25,55 @@ let AuthService = exports.AuthService = class AuthService {
         this.flashcardsService = flashcardsService;
         this.statsService = statsService;
     }
-    signup(email, password, username) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.usersService.find(email);
-            if (users.length) {
-                throw new common_1.BadRequestException('email in use');
-            }
-            const salt = (0, crypto_1.randomBytes)(8).toString('hex');
-            const hash = (yield scrypt(password, salt, 32));
-            const result = salt + '.' + hash.toString('hex');
-            const user = yield this.usersService.create(email, result, username);
-            return user;
-        });
+    async signup(email, password, username) {
+        const users = await this.usersService.find(email);
+        if (users.length) {
+            throw new common_1.BadRequestException('email in use');
+        }
+        const salt = (0, crypto_1.randomBytes)(8).toString('hex');
+        const hash = (await scrypt(password, salt, 32));
+        const result = salt + '.' + hash.toString('hex');
+        const user = await this.usersService.create(email, result, username);
+        return user;
     }
-    validateUser(email, password) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const [user] = yield this.usersService.find(email);
-            if (!user) {
-                throw new common_1.NotFoundException('User not found');
-            }
-            const [salt, storedHash] = user.password.split('.');
-            const hash = (yield scrypt(password, salt, 32));
-            if (storedHash !== hash.toString('hex')) {
-                throw new common_1.BadRequestException('Invalid password');
-            }
-            return user;
-        });
+    async validateUser(email, password) {
+        const [user] = await this.usersService.find(email);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const [salt, storedHash] = user.password.split('.');
+        const hash = (await scrypt(password, salt, 32));
+        if (storedHash !== hash.toString('hex')) {
+            throw new common_1.BadRequestException('Invalid password');
+        }
+        return user;
     }
-    login(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const payload = { email: user.email, sub: user.id };
-            const rawUser = yield this.usersService.findOne(payload.sub);
-            const currentUser = {
-                id: rawUser.id,
-                email: rawUser.email,
-                username: rawUser.username,
-            };
-            return {
-                currentUser,
-                access_token: this.jwtService.sign(payload),
-                flashcards: yield this.flashcardsService.findFlashcards(currentUser.id),
-                stats: yield this.statsService.findStats(currentUser.id),
-            };
-        });
+    async login(user) {
+        const payload = { email: user.email, sub: user.id };
+        const rawUser = await this.usersService.findOne(payload.sub);
+        const currentUser = {
+            id: rawUser.id,
+            email: rawUser.email,
+            username: rawUser.username,
+        };
+        return {
+            currentUser,
+            access_token: this.jwtService.sign(payload),
+            flashcards: await this.flashcardsService.findFlashcards(currentUser.id),
+            stats: await this.statsService.findStats(currentUser.id),
+        };
     }
-    signin(email, password) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const [user] = yield this.usersService.find(email);
-            if (!user) {
-                throw new common_1.NotFoundException('User not found');
-            }
-            const [salt, storedHash] = user.password.split('.');
-            const hash = (yield scrypt(password, salt, 32));
-            if (storedHash !== hash.toString('hex')) {
-                throw new common_1.BadRequestException('Invalid password');
-            }
-            return user;
-        });
+    async signin(email, password) {
+        const [user] = await this.usersService.find(email);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const [salt, storedHash] = user.password.split('.');
+        const hash = (await scrypt(password, salt, 32));
+        if (storedHash !== hash.toString('hex')) {
+            throw new common_1.BadRequestException('Invalid password');
+        }
+        return user;
     }
 };
 exports.AuthService = AuthService = __decorate([

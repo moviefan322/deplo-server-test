@@ -67,9 +67,9 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     const rawUser = await this.usersService.findOne(payload.sub);
     const currentUser = {
-      id: rawUser.id,
-      email: rawUser.email,
-      username: rawUser.username,
+      id: rawUser!.id,
+      email: rawUser!.email,
+      username: rawUser!.username,
     };
     return {
       currentUser,

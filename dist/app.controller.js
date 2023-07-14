@@ -11,15 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
@@ -36,31 +27,25 @@ let AppController = exports.AppController = class AppController {
         this.flashcardsService = flashcardsService;
         this.usersService = usersService;
     }
-    login(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log(req);
-            return this.authService.login(req.user);
-        });
+    async login(req) {
+        console.log(req);
+        return this.authService.login(req.user);
     }
-    getProfile(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const stats = yield this.statsService.findStats(req.user.id);
-            const flashcards = yield this.flashcardsService.findFlashcards(req.user.id);
-            return { user: req.user, stats, flashcards };
-        });
+    async getProfile(req) {
+        const stats = await this.statsService.findStats(req.user.id);
+        const flashcards = await this.flashcardsService.findFlashcards(req.user.id);
+        return { user: req.user, stats, flashcards };
     }
-    getUserData(req, id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.usersService.findOne(id);
-            const stats = yield this.statsService.findStats(id);
-            const flashcards = yield this.flashcardsService.findFlashcards(id);
-            return { user, stats, flashcards };
-        });
+    async getUserData(req, id) {
+        const user = await this.usersService.findOne(id);
+        const stats = await this.statsService.findStats(id);
+        const flashcards = await this.flashcardsService.findFlashcards(id);
+        return { user, stats, flashcards };
     }
 };
 __decorate([
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
-    (0, common_1.Post)('auth/login'),
+    (0, common_1.Post)("auth/login"),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -68,16 +53,16 @@ __decorate([
 ], AppController.prototype, "login", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('profile'),
+    (0, common_1.Get)("profile"),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getProfile", null);
 __decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)

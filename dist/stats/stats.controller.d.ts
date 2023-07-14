@@ -6,5 +6,5 @@ export declare class StatsController {
     constructor(statsService: StatsService);
     findStats(userId: number): Promise<import("./stats.entity").Stats[]>;
     create(body: CreateStatDto): Promise<import("./stats.entity").Stats>;
-    update(id: number, body: UpdateStatDto): Promise<import("./stats.entity").Stats>;
+    update(id: number, body: UpdateStatDto): Promise<import("./stats.entity").Stats | null>;
 }

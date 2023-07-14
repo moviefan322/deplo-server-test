@@ -19,11 +19,8 @@ const app_service_1 = require("./app.service");
 const users_module_1 = require("./users/users.module");
 const lessons_module_1 = require("./lessons/lessons.module");
 const stats_module_1 = require("./stats/stats.module");
-const user_entity_1 = require("./users/user.entity");
-const stats_entity_1 = require("./stats/stats.entity");
-const lesson_entity_1 = require("./lessons/lesson.entity");
 const session = require("express-session");
-const flashcard_entity_1 = require("./flashcards/flashcard.entity");
+const typeorm_config_1 = require("./config/typeorm.config");
 const flashcards_module_1 = require("./flashcards/flashcards.module");
 const auth_module_1 = require("./auth/auth.module");
 let AppModule = exports.AppModule = class AppModule {
@@ -33,26 +30,23 @@ let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer
             .apply(session({
-            secret: 'my-secret',
+            secret: "supersecret",
             resave: false,
             saveUninitialized: false,
         }))
-            .forRoutes('*');
+            .forRoutes("*");
     }
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                envFilePath: ['.env'],
+                envFilePath: `.env.${process.env.NODE_ENV}`,
                 isGlobal: true,
                 cache: true,
             }),
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'sqlite',
-                database: 'db.sqlite',
-                entities: [user_entity_1.User, stats_entity_1.Stats, lesson_entity_1.Lesson, flashcard_entity_1.Flashcard],
-                synchronize: true,
+            typeorm_1.TypeOrmModule.forRootAsync({
+                useClass: typeorm_config_1.TypeOrmConfigService,
             }),
             users_module_1.UsersModule,
             lessons_module_1.LessonsModule,

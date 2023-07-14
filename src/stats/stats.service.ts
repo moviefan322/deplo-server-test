@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Stats } from './stats.entity';
-import { CreateStatDto } from './dtos/create-stat.dto';
-import { UpdateStatDto } from './dtos/update-stat.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Stats } from "./stats.entity";
+import { CreateStatDto } from "./dtos/create-stat.dto";
+import { UpdateStatDto } from "./dtos/update-stat.dto";
 
 @Injectable()
 export class StatsService {
   constructor(
     @InjectRepository(Stats)
-    private repo: Repository<Stats>,
+    private repo: Repository<Stats>
   ) {}
 
   async create(statDto: CreateStatDto) {
@@ -24,6 +24,9 @@ export class StatsService {
 
   async update(id: number, statDto: UpdateStatDto) {
     const stat = await this.repo.findOne({ where: { id } });
+    if (!stat) {
+      return null;
+    }
     this.repo.merge(stat, statDto);
     return this.repo.save(stat);
   }
