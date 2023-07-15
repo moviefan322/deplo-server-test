@@ -1,0 +1,29 @@
+{
+  "name": "SpanishApp",
+  "description": "Spanish language learning tool.",
+  "website": "https://tooljet.io/",
+  "repository": "https://github.com/moviefan322/deplo-server-test",
+  "logo": "https://images.idgesg.net/images/article/2019/11/edge-icon-larger-100816492-large.jpg",
+  "success_url": "/",
+  "scripts":{
+    "predeploy": "npm install && npm run build"
+  },
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment [production/development]",
+      "value": "production"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "image": "heroku/nodejs",
+  "addons": ["heroku-postgresql"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}

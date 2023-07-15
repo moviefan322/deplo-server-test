@@ -3,4 +3,7 @@ export declare const DBOptions: {
     entities: string[];
     synchronize: boolean;
     migrations: string[];
+    cli: {
+        migrationsDir: string;
+    };
 };

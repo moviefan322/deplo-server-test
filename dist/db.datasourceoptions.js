@@ -4,8 +4,11 @@ exports.DBOptions = void 0;
 const _DBOptions = {
     type: "sqlite",
     entities: [__dirname + "/**/*.entity{.js,.ts}"],
-    synchronize: true,
-    migrations: [__dirname + "/migrations/*.js"],
+    synchronize: false,
+    migrations: [__dirname + "migrations/*.js"],
+    cli: {
+        migrationsDir: "migrations",
+    },
 };
 switch (process.env.NODE_ENV) {
     case "development":
